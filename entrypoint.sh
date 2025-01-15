@@ -2,6 +2,9 @@
 
 set -e
 
+COMMAND=$1
+URL=$2
+
 # Create the /out directory if it doesn't exist
 mkdir -p /out
 
@@ -17,28 +20,41 @@ help() {
 }
 
 # Check if -h or --help is passed
-if [[ "$1" == "-h" || "$1" == "--help"  ]]; then
+if [[ "$1" == "pre-upgrade-audio"  ]]; then
+  pip install --upgrade --force-reinstall yt-dlp
+  COMMAND="audio"
+fi
+
+if [[ "$1" == "pre-upgrade-video"  ]]; then
+  pip install --upgrade --force-reinstall yt-dlp
+  COMMAND="video"
+fi
+
+# Check if -h or --help is passed
+if [[ "$1" == "-h" || "$1" == "--help"|| "$1" == "help"   ]]; then
   help
 fi
 
-if [ -z "$1" ]; then
+if [ -z "$COMMAND" ]; then
   echo "Error: Missing mode argument."
   help
 fi
 
-if [ "$1" == "audio" ]; then
-  if [ -z "$2" ]; then
+if [ "$COMMAND" == "audio" ]; then
+  if [ -z "$URL" ]; then
     echo "Error: Missing URL argument for audio mode."
     help
   fi
-  yt-dlp -f bestaudio --extract-audio --audio-format mp3 -o "/out/%(title)s.%(ext)s" "$2"
-elif [ "$1" == "video" ]; then
-  if [ -z "$2" ]; then
+  yt-dlp -f bestaudio --extract-audio --audio-format mp3 -o "/out/%(title)s.%(ext)s" "$URL"
+
+elif [ "$COMMAND" == "video" ]; then
+  if [ -z "$URL" ]; then
     echo "Error: Missing URL argument for video mode."
     help
   fi
-  yt-dlp -f "bestvideo+bestaudio" --merge-output-format mp4 -o "/out/%(title)s.%(ext)s" "$2"
+  yt-dlp -f "bestvideo+bestaudio" --merge-output-format mp4 -o "/out/%(title)s.%(ext)s" "$URL"
+
 else
-  echo "Error: Invalid mode: $1. Use 'audio' or 'video'."
+  echo "Error: Invalid mode: $COMMAND. Use 'audio' or 'video'."
   help
 fi
