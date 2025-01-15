@@ -26,7 +26,7 @@ The container supports two modes: audio and video.
 To download audio in MP3 format:
 
 ```bash
-docker run --rm -v /path/to/output:/out yt-downloader audio <URL>
+docker run --rm -d --name yt-downloding -v /path/to/output:/out yt-downloader audio <URL>
 ```
 
 ### Video Download
@@ -34,8 +34,11 @@ docker run --rm -v /path/to/output:/out yt-downloader audio <URL>
 To download video in MP4 format:
 
 ```bash
-docker run --rm -v /path/to/output:/out yt-downloader video <URL>
+docker run --rm -d --name yt-downloding -v /path/to/output:/out yt-downloader video <URL>
 ```
+### Monitoring and Stopping
+- `docker logs yt-downloding -f` can be used to monitor the download progress.
+- `docker kill yt-downloding` can be used to stop the download.
 
 ### Help
 
